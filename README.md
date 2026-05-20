@@ -10,9 +10,9 @@
 
 Приложение для отслеживания предметов, которые хранятся в ящиках дома.
 
--Язык: С#
--Приложение: WPF desktop application
--База данных: PostgreSQL
+- Язык: С#
+- Приложение: WPF desktop application
+- База данных: PostgreSQL
 
 Ссылка на запись работы приложения на YouTube:
 https://youtu.be/n50u01qgydQ
