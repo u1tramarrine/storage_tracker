@@ -1,0 +1,221 @@
+<Window x:Class="storage_tracker.Views.ItemEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:storage_tracker.Converters"
+        Title="Редактирование"
+        Height="800" Width="550"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <local:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
+        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,10,0,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="SaveButtonStyle">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#005A9E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" x:Key="CancelButtonStyle">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Background" Value="#95A5A6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#7F8C8D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="600"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding Header, FallbackValue='Редактирование'}"
+                   FontSize="20" FontWeight="Bold"
+                   Margin="0,0,0,20" HorizontalAlignment="Center" Foreground="#2C3E50"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Height="auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Category specific fields -->
+                    <StackPanel Grid.Row="0" x:Name="CategoryPanel" Visibility="Collapsed">
+                        <TextBlock Text="Название категории:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Text="Описание:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Description}" AcceptsReturn="True"
+                     Height="80" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    </StackPanel>
+
+                    <!-- Box specific fields -->
+                    <StackPanel Grid.Row="1" x:Name="BoxPanel" Visibility="Collapsed">
+                        <TextBlock Text="Название коробки:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Text="Местоположение:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Location}"/>
+
+                        <TextBlock Text="Описание:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Description}" AcceptsReturn="True"
+                     Height="80" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                        <!-- ComboBox для выбора категории -->
+                        <TextBlock Text="Категория:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="CategoryInBoxComboBox"
+					  DisplayMemberPath="Name"
+					  SelectedValuePath="Id"
+					  SelectedValue="{Binding EditedItem.CategoryId}"
+					  Margin="0,0,0,10"
+					  Padding="8,5"
+					  FontSize="13"/>
+
+                        <TextBlock Text="URL фото:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.PhotoUrl}"/>
+
+                    </StackPanel>
+
+                    <!-- Item specific fields -->
+                    <StackPanel Grid.Row="2" x:Name="ItemPanel" Visibility="Collapsed">
+                        <TextBlock Text="Название предмета:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Text="Описание:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Description}" AcceptsReturn="True"
+					 Height="80" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Количество:" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Text="{Binding EditedItem.Quantity, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Цена (BYN):" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Text="{Binding EditedItem.Price, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- ComboBox для выбора коробки -->
+                        <TextBlock Text="Коробка/место:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="BoxComboBox"
+					  DisplayMemberPath="Name"
+					  SelectedValuePath="Id"
+					  SelectedValue="{Binding EditedItem.BoxId}"
+					  Margin="0,0,0,10"
+					  Padding="8,5"
+					  FontSize="13"/>
+
+                        <!-- ComboBox для выбора категории -->
+                        <TextBlock Text="Категория:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="CategoryInItemComboBox"
+					  DisplayMemberPath="Name"
+					  SelectedValuePath="Id"
+					  SelectedValue="{Binding EditedItem.CategoryId}"
+					  Margin="0,0,0,10"
+					  Padding="8,5"
+					  FontSize="13"/>
+
+                        <TextBlock Text="URL фото:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.PhotoUrl}"/>
+
+                        <TextBlock Text="Заметки:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox Text="{Binding EditedItem.Notes}" AcceptsReturn="True"
+					 Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                        <TextBlock Text="Дата создания:" Style="{StaticResource FormLabelStyle}"/>
+                        <DatePicker x:Name="CreatedAtDatePicker"
+                            SelectedDate="{Binding EditedItem.CreatedAt, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}"  
+                            DisplayDateStart="2000-01-01"
+                            Margin="0,0,0,10"
+                            FontSize="13"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Button Content="💾 Сохранить" Command="{Binding SaveCommand}"
+                    Style="{StaticResource SaveButtonStyle}"/>
+            <Button Content="❌ Отмена" Command="{Binding CancelCommand}"
+                    Style="{StaticResource CancelButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>
